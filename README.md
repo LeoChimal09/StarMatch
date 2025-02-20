@@ -1,11 +1,12 @@
 # Create Star Match game
 
 ##TODO
-- [ ] Add text that describes the game
-- [ ] Add stars to the screen
-    - [ ] Make stars randomized
+- [ ] Create a welcoming page
+- [ ] Add a button that switches to game
+- [x] Add stars to the screen
+    - [x] Make stars randomized
 
-- [ ] Add buttons
+- [x] Add buttons
     - [ ] Implement button functions 
 
 - [ ] Include counting timer
