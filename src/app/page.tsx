@@ -1,15 +1,12 @@
 "use client";
-import React from "react";
-
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import {random, range} from './utils';
-import {sum} from './utils';
+import React, { useState, useEffect } from "react";
+import {random, range, sum, randomSumIn} from './utils';
 
 //This defines the props for the PlayNumber component and ensures type safety
 interface PlayNumberProps {
   number: number;
-  onClick: (number: number) => void;
+  onClick: (number: number, currentStatus:string) => void;
   status: keyof typeof colors;
 }
 
@@ -17,7 +14,7 @@ interface PlayNumberProps {
 const colors = {
   available: 'lightgray',
   used: 'lightgreen',
-  wrong: 'lightcoral',
+  wrong: 'red',
   candidate: 'deepskyblue',
 };
 
@@ -26,7 +23,7 @@ const PlayNumber: React.FC<PlayNumberProps> = (props) => {
   return (
     <button className="number" 
       style={{margin: '5px', backgroundColor: colors[props.status] }} 
-      onClick={() => props.onClick(props.number)}
+      onClick={() => props.onClick(props.number, props.status)}
     >
       {props.number}
     </button>
@@ -35,8 +32,8 @@ const PlayNumber: React.FC<PlayNumberProps> = (props) => {
 
 const HomePage: React.FC = () => {
   const [stars, setStars] = useState<number>(0);
-  const [availableNums, setAvailableNums] = useState([1,2,3,4,5]);
-  const [candidateNums, setCanditateNums] = useState([2,3]);
+  const [availableNums, setAvailableNums] = useState(range(1,9));
+  const [candidateNums, setCanditateNums] = useState<number[]>([]);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   
   const candidatesAreWrong = sum(candidateNums) > stars;
@@ -62,13 +59,26 @@ const HomePage: React.FC = () => {
     randomizeStars();
   }, []);
 
-  //This function will be used to change the color of the buttons clicked
-  const handleNumberClick = (number:number) => {
-    setSelectedNumbers((prevSelectedNumbers) =>
-      prevSelectedNumbers.includes(number)
-        ? prevSelectedNumbers.filter((num) => num !== number)
-        : [...prevSelectedNumbers,number]
-    );
+  const handleNumberClick = (number:number, currentStatus:string) => {
+    if (currentStatus == 'used'){
+      return;
+    }
+    // candidateNums
+    const newCandidateNums = 
+    currentStatus === 'available'
+    ? [...candidateNums,number]
+    : candidateNums.filter((cn) => cn !== number);
+
+    if (sum(newCandidateNums) !== stars){
+      setCanditateNums(newCandidateNums);
+    } else {
+      const newAvailableNums = availableNums.filter(
+        (n) => !newCandidateNums.includes(n)
+      );
+      setAvailableNums(newAvailableNums);
+      setCanditateNums([]);
+      setStars(randomSumIn(newAvailableNums,9))
+    }
   };
 
   return (
