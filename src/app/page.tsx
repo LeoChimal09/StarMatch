@@ -8,6 +8,7 @@ interface PlayNumberProps {
   number: number;
   onClick: (number: number, currentStatus:string) => void;
   status: keyof typeof colors;
+  disabled: boolean;
 }
 
 // Color Theme
@@ -24,6 +25,7 @@ const PlayNumber: React.FC<PlayNumberProps> = (props) => {
     <button className="number" 
       style={{margin: '5px', backgroundColor: colors[props.status], color: 'black' }} 
       onClick={() => props.onClick(props.number, props.status)}
+      disabled={props.disabled}
     >
       {props.number}
     </button>
@@ -44,7 +46,10 @@ const PlayAgain: React.FC<{onClick: () => void }> = ({onClick}) => (
   <div className="game-done">
     <button 
       style={{margin: '10px', backgroundColor: 'white', color: 'black', width: "120px", height: '40px' }} 
-    onClick = {onClick}>Play Again</button>
+    onClick = {onClick}
+    >
+      Play Again
+      </button>
   </div>
 )
 
@@ -54,7 +59,21 @@ const HomePage: React.FC = () => {
   const [candidateNums, setCanditateNums] = useState<number[]>([]);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [gameIsDone, setGameIsDone] = useState<boolean>(false);
+  const [secondsLeft, setSecondsLeft] = useState(10);
   
+  // setTimeout
+  useEffect(() => {
+    if (secondsLeft > 0) {
+      const timerId = setTimeout(() => {
+        setSecondsLeft(secondsLeft-1);
+      }, 1000);
+      return () => clearTimeout(timerId);
+    } else {
+      setGameIsDone(true);
+    }
+  }, [secondsLeft]
+);
+
   const candidatesAreWrong = sum(candidateNums) > stars;
   
   const numberStatus = (number:number): keyof typeof colors => {
@@ -111,6 +130,7 @@ const HomePage: React.FC = () => {
     setCanditateNums([]);
     setSelectedNumbers([]);
     setGameIsDone(false);
+    setSecondsLeft(10);
   };
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
@@ -122,7 +142,13 @@ const HomePage: React.FC = () => {
         <section className="body">
           <div className="body">
             <div className="left" style={{border: '1px solid red', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', minHeight: '120px'}}>
-                <StarsDisplay count={stars} />  
+              {secondsLeft > 0 && availableNums.length > 0 ? (
+                <StarsDisplay count={stars} /> 
+              ) : (
+                <>
+                <PlayAgain onClick={handlePlayAgain} />
+                </>
+              )}
             </div>
             <div className="right" style={{border: '1px solid red', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px'}}>
               {range(1,9).map((number:number) => (
@@ -131,15 +157,14 @@ const HomePage: React.FC = () => {
                   number={number}
                   onClick={handleNumberClick}
                   status={numberStatus(number)}
+                  disabled={secondsLeft ===0 || gameIsDone}
                 />
               ))}
-
             </div>
           </div>
         </section>
-        <div className="timer">Time Remaining: 10</div>
+        <div className="timer">Time Remaining: {secondsLeft}</div>
       </div>
-      {gameIsDone && <PlayAgain onClick={handlePlayAgain}/>}
     </main>
   );
 }

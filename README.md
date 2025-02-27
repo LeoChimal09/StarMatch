@@ -11,9 +11,8 @@
     - [x] Add buttons
     - [x] Change button colors to define its status
 
-- [ ] Create an endgame functionality
-    - [ ] Include countdown timer
-    - [ ] Add function that ends game
-    - [ ] Add text that tells the time
-    - [ ] Add text that says win or lose
+- [x] Create an endgame functionality
+    - [x] Include countdown timer
+    - [x] Add function that ends game
+    - [x] Add text that tells the time
     - [x] Create button that resets game
