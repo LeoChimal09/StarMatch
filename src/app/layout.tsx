@@ -1,6 +1,6 @@
-import "~/styles/globals.css";
-
+import "~/styles/globals.css"; //This creates a layout, Might change for better styling
 import { GeistSans } from "geist/font/sans";
+
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,10 +11,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body>{children}</body>
+    <html lang="en">
+      <body className={'font-sans ${inter-variable'}>
+        {children}
+      </body>
     </html>
   );
-}
+};

@@ -1,9 +1,9 @@
 # Create Star Match game
 
 ##TODO
-- [ ] Create home screen styling
-    - [ ] Create a welcoming page
-    - [ ] Add a button that switches to game
+- [x] Create home screen styling
+    - [x] Create a welcoming page
+    - [x] Add a button that switches to game
 
 - [x] Create game setup
     - [x] Add stars to the screen
